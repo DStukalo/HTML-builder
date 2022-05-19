@@ -19,7 +19,7 @@ rl.on('line', (line) => {
             console.log(BYMESSAGE);
             process.exit(0);
         default:
-            const data = line + '\n';
+            const data = line.trim() + '\n';
             fs.appendFile(WAY, data, (err) => {
                 if (err) throw err;
                 console.log('ok, write more');
