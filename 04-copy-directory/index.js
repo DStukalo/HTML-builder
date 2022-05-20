@@ -23,7 +23,6 @@ fs.readdir(wayCreateDir, function (err, items) {
         let curItem = path.join(wayCreateDir, items[i]);
         let itemInPrev = path.join(wayPrevDir, items[i]);
         fs.access(itemInPrev, (err) => {
-            console.log(`${itemInPrev} ${err ? 'does not exist' : 'exists'}`);
             if (err) {
                 fs.unlink(curItem, (err) => {
                     if (err) throw err;
