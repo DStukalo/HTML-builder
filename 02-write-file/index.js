@@ -14,12 +14,12 @@ rl.prompt();
 console.log(HELLOYMESSAGE);
 
 rl.on('line', (line) => {
-    switch (line.trim()) {
+    switch (line) {
         case 'exit':
             console.log(BYMESSAGE);
             process.exit(0);
         default:
-            const data = line.trim() + '\n';
+            const data = line + '\n';
             fs.appendFile(WAY, data, (err) => {
                 if (err) throw err;
                 console.log('ok, write more');
