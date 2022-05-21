@@ -1,11 +1,12 @@
 const path = require('path');
 const fs = require('fs');
 const WAY = path.join(__dirname, 'text.txt');
+const readStream = fs.createReadStream(WAY, 'utf-8');
 
-fs.readFile(WAY, (err, text) => {
-    if (err) {
-        throw err;
-    }
-    const data = Buffer.from(text);
+readStream.on('data', (chunk) => {
+    const data = Buffer.from(chunk);
     console.log(data.toString());
+});
+readStream.on('error', (e) => {
+    throw e;
 });
