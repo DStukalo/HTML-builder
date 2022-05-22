@@ -9,10 +9,11 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
-
+fs.appendFile(WAY, '', (err) => {
+    if (err) throw err;
+});
 rl.prompt();
 console.log(HELLOYMESSAGE);
-
 rl.on('line', (line) => {
     switch (line) {
         case 'exit':
@@ -22,7 +23,6 @@ rl.on('line', (line) => {
             const data = line + '\n';
             fs.appendFile(WAY, data, (err) => {
                 if (err) throw err;
-                console.log('ok, write more');
             });
             break;
     }
