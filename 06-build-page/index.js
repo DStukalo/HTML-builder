@@ -61,6 +61,7 @@ fs.rm(createDirectory, { recursive: true, force: true }, (err) => {
                         .split('')
                         .slice(start + 1, finish - 1)
                         .join('');
+                    console.log(res);
                     const componentsForRead = path.join(
                         __dirname,
                         'components',
@@ -71,10 +72,10 @@ fs.rm(createDirectory, { recursive: true, force: true }, (err) => {
                         'utf-8'
                     );
                     component.on('data', (chunk) => {
-                        writeStreamHTML.write(chunk + '\n');
+                        writeStreamHTML.write(chunk);
                     });
                 } else {
-                    writeStreamHTML.write(line + '\n');
+                    writeStreamHTML.write(line);
                 }
                 fs.readdir(cssForRead, function (err, items) {
                     if (err) throw err;
