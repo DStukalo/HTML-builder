@@ -26,7 +26,6 @@ fs.readdir(wayCreateDir, function (err, items) {
             if (err) {
                 fs.unlink(curItem, (err) => {
                     if (err) throw err;
-                    console.log('curItem was deleted');
                 });
             }
         });
