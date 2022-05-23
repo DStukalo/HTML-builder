@@ -47,31 +47,22 @@ const readInterface = readline.createInterface({
     input: fs.createReadStream(htmlForRead, 'utf-8'),
 });
 readInterface.on('line', function (line) {
-    if (line.trim() === '{{header}}') {
-        const componentsForRead = path.join(
-            __dirname,
-            'components',
-            'header.html'
-        );
-        const footer = fs.createReadStream(componentsForRead, 'utf-8');
-        footer.on('data', (chunk) => {
-            writeStreamHTML.write(chunk + '\n');
+    if (line.trim().match(/{{/)) {
+        line.split('').forEach((el, i) => {
+            if (el === '{') {
+                start = i;
+            } else if (el === '}') {
+                finish = i;
+            }
         });
-    } else if (line.trim() === '{{articles}}') {
+        let res = line
+            .split('')
+            .slice(start + 1, finish - 1)
+            .join('');
         const componentsForRead = path.join(
             __dirname,
             'components',
-            'articles.html'
-        );
-        const footer = fs.createReadStream(componentsForRead, 'utf-8');
-        footer.on('data', (chunk) => {
-            writeStreamHTML.write(chunk + '\n');
-        });
-    } else if (line.trim() === '{{footer}}') {
-        const componentsForRead = path.join(
-            __dirname,
-            'components',
-            'footer.html'
+            `${res}.html`
         );
         const footer = fs.createReadStream(componentsForRead, 'utf-8');
         footer.on('data', (chunk) => {
