@@ -48,61 +48,63 @@ fs.rm(createDirectory, { recursive: true, force: true }, (err) => {
             const readInterface = readline.createInterface({
                 input: fs.createReadStream(htmlForRead, 'utf-8'),
             });
-            readInterface.on('line', function (line) {
-                if (line.trim().match(/{{/)) {
-                    line.split('').forEach((el, i) => {
-                        if (el === '{') {
-                            start = i;
-                        } else if (el === '}') {
-                            finish = i;
-                        }
-                    });
-                    let res = line
-                        .split('')
-                        .slice(start + 1, finish - 1)
-                        .join('');
-                    console.log(res);
+            fs.readFile(htmlForRead, 'utf-8', (err, data) => {
+                if (err) throw err;
+                const replaced = data.match(/{{(.*?)}}/g);
+                for (let item of replaced) {
+                    let res = item.slice(2, -2);
                     const componentsForRead = path.join(
                         __dirname,
                         'components',
                         `${res}.html`
                     );
-                    const component = fs.createReadStream(
-                        componentsForRead,
-                        'utf-8'
-                    );
-                    component.on('data', (chunk) => {
-                        writeStreamHTML.write(chunk);
-                    });
-                } else {
-                    writeStreamHTML.write(line + '\n');
-                }
-                fs.readdir(cssForRead, function (err, items) {
-                    if (err) throw err;
-                    let project = path.join(__dirname, 'project-dist');
-                    const writeStream = fs.createWriteStream(
-                        path.join(project, 'style.css')
-                    );
-                    // Create css
-                    items.forEach((el) => {
-                        let cur = path.join(cssForRead, el);
-                        fs.stat(cur, (err, stats) => {
-                            if (err) throw err;
-                            if (
-                                stats.isFile() &&
-                                path.parse(el).ext === '.css'
-                            ) {
-                                const readStream = fs.createReadStream(
-                                    cur,
-                                    'utf-8'
-                                );
-                                readStream.on('data', (chunk) => {
-                                    writeStream.write(chunk);
+                    fs.readFile(componentsForRead, 'utf-8', (err, data2) => {
+                        if (err) throw err;
+                        data = data.replace(item, data2);
+                        fs.writeFile(
+                            path.join(createDirectory, 'index.html'),
+                            data,
+                            (err) => {
+                                if (err) throw err;
+                                fs.readdir(cssForRead, function (err, items) {
+                                    if (err) throw err;
+                                    let project = path.join(
+                                        __dirname,
+                                        'project-dist'
+                                    );
+                                    const writeStream = fs.createWriteStream(
+                                        path.join(project, 'style.css')
+                                    );
+                                    // Create css
+                                    items.forEach((el) => {
+                                        let cur = path.join(cssForRead, el);
+                                        fs.stat(cur, (err, stats) => {
+                                            if (err) throw err;
+                                            if (
+                                                stats.isFile() &&
+                                                path.parse(el).ext === '.css'
+                                            ) {
+                                                const readStream =
+                                                    fs.createReadStream(
+                                                        cur,
+                                                        'utf-8'
+                                                    );
+                                                readStream.on(
+                                                    'data',
+                                                    (chunk) => {
+                                                        writeStream.write(
+                                                            chunk
+                                                        );
+                                                    }
+                                                );
+                                            }
+                                        });
+                                    });
                                 });
                             }
-                        });
+                        );
                     });
-                });
+                }
             });
         });
     });
