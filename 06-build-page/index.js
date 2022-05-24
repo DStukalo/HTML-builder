@@ -75,7 +75,7 @@ fs.rm(createDirectory, { recursive: true, force: true }, (err) => {
                         writeStreamHTML.write(chunk);
                     });
                 } else {
-                    writeStreamHTML.write(line);
+                    writeStreamHTML.write(line + '\n');
                 }
                 fs.readdir(cssForRead, function (err, items) {
                     if (err) throw err;
