@@ -42,12 +42,6 @@ fs.rm(createDirectory, { recursive: true, force: true }, (err) => {
                 });
             }
             //Read and write html
-            const writeStreamHTML = fs.createWriteStream(
-                path.join(createDirectory, 'index.html')
-            );
-            const readInterface = readline.createInterface({
-                input: fs.createReadStream(htmlForRead, 'utf-8'),
-            });
             fs.readFile(htmlForRead, 'utf-8', (err, data) => {
                 if (err) throw err;
                 const replaced = data.match(/{{(.*?)}}/g);
@@ -93,7 +87,7 @@ fs.rm(createDirectory, { recursive: true, force: true }, (err) => {
                                                     'data',
                                                     (chunk) => {
                                                         writeStream.write(
-                                                            chunk
+                                                            chunk + '\n'
                                                         );
                                                     }
                                                 );
